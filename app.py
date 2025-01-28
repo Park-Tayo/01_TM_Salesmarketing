@@ -18,7 +18,7 @@ try:
         st.error('OpenAI API 키가 설정되지 않았습니다.')
         st.stop()
         
-    openai.api_key = openai_api_key  # API 키를 전역적으로 설정합니다
+    client = openai.OpenAI(api_key=openai_api_key)  # OpenAI 클라이언트 초기화
 except Exception as e:
     st.error(f'API 키 설정 중 오류가 발생했습니다: {str(e)}')
     st.stop()
