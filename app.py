@@ -57,7 +57,7 @@ def main():
         st.info("이 AI 챗봇은 「터지는 릴스 강의」 내용을 기반으로 답변합니다.")
         
         # 참고 페이지 링크 추가
-        st.markdown("### 참고 페이지")
+        st.markdown("### 참고 자료")
         st.markdown("[📚 「한신그룹 - 터지는 릴스 자료」\n바로가기](https://smart-jumper-b33.notion.site/185312cc7a5980aaa201f0303e1f7c10)")
         
         # 구분선 추가
