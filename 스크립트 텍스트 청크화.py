@@ -30,7 +30,7 @@ def split_into_chunks(text, max_chars=800):
     return chunks
 
 # CSV 파일 읽기
-df = pd.read_csv('릴스 강의_청크.csv')
+df = pd.read_csv('영상편집 교육 영상.csv')
 
 # text 컬럼만 추출하여 하나의 텍스트로 합치기
 full_text = ' '.join(df['text'].astype(str))
@@ -42,7 +42,7 @@ chunks = split_into_chunks(full_text)
 chunks_df = pd.DataFrame({'text': chunks})
 
 # CSV 파일로 저장
-chunks_df.to_csv('릴스 강의_청크.csv', index=False, encoding='utf-8-sig')
+chunks_df.to_csv('영상편집 교육 영상.csv', index=False, encoding='utf-8-sig')
 
 print(f"총 {len(chunks)}개의 청크로 분리되었습니다.")
 for i, chunk in enumerate(chunks, 1):
