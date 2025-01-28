@@ -24,25 +24,7 @@ except Exception as e:
     st.stop()
 
 # 페이지 설정
-st.set_page_config(
-    page_title="릴스 Q&A 챗봇", 
-    page_icon="🤖",
-    initial_sidebar_state="collapsed",
-    menu_items={
-        'Get Help': None,
-        'Report a bug': None,
-        'About': None
-    }
-)
-
-# GitHub 버튼 등 기본 메뉴 숨기기
-hide_menu_style = """
-        <style>
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        </style>
-        """
-st.markdown(hide_menu_style, unsafe_allow_html=True)
+st.set_page_config(page_title="릴스 Q&A 챗봇", page_icon="🤖")
 
 # 스크립트 데이터 로드
 @st.cache_data
@@ -59,7 +41,8 @@ def main():
     st.title("💬 릴스 Q&A 챗봇")
     
     # 사이드바 안내 메시지 추가
-    st.info("ℹ️ 좌측 사이드바(>)에서 참고 자료와 문의처를 확인하실 수 있습니다.")
+    st.info("ℹ️ 좌측 상단의 메뉴(≡)를 클릭하시면 참고 자료와 문의처를 확인하실 수 있습니다.\n"
+            "ℹ️ 채팅창에 질문을 입력하신 후 종이비행기 버튼을 클릭하시면 AI가 답변해드립니다.")
     
     # 대화 초기화 버튼
     if st.button("대화 초기화"):
