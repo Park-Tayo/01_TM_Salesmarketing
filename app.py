@@ -24,7 +24,7 @@ except Exception as e:
     st.stop()
 
 # 페이지 설정
-st.set_page_config(page_title="릴스 강의 Q&A 챗봇", page_icon="🤖")
+st.set_page_config(page_title="릴스 Q&A 챗봇", page_icon="🤖")
 
 # 스크립트 데이터 로드
 @st.cache_data
@@ -38,9 +38,12 @@ if "messages" not in st.session_state:
 
 # 메인 함수
 def main():
-    st.title("💬 릴스 강의 Q&A 챗봇")
+    st.title("💬 릴스 Q&A 챗봇")
     
-    # 대화 초기화 버튼을 타이틀 바로 아래로 이동
+    # 사이드바 안내 메시지 추가
+    st.info("ℹ️ 좌측 사이드바(>)에서 참고 자료와 문의처를 확인하실 수 있습니다.")
+    
+    # 대화 초기화 버튼
     if st.button("대화 초기화"):
         st.session_state.messages = []
         st.rerun()
