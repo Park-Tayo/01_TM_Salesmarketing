@@ -44,14 +44,6 @@ def main():
     st.info("ℹ️ 좌측의 메뉴(>)를 클릭하시면 참고 자료와 문의처를 확인하실 수 있습니다.\n\n"
             "ℹ️ 하단의 종이비행기 버튼을 클릭하시면 AI가 답변해드립니다.")
     
-    # 대화 초기화 버튼
-    if st.button("대화 초기화"):
-        st.session_state.messages = []
-        st.rerun()
-    
-    # 스크립트 로드
-    script = load_script()
-    
     # 사이드바에 정보 표시
     with st.sidebar:
         st.header("AI 챗봇 정보")
@@ -121,6 +113,13 @@ def main():
                     
                 except Exception as e:
                     st.error(f"오류가 발생했습니다: {str(e)}")
+
+    # 대화 초기화 버튼을 우측 하단에 배치
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col3:
+        if st.button("🔄 대화 초기화", use_container_width=True):
+            st.session_state.messages = []
+            st.rerun()
 
 if __name__ == "__main__":
     main() 
