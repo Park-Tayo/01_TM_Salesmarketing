@@ -44,36 +44,21 @@ def main():
     st.info("ℹ️ 좌측의 메뉴(>)를 클릭하시면 참고 자료와 문의처를 확인하실 수 있습니다.\n\n"
             "ℹ️ 하단의 종이비행기 버튼을 클릭하시면 AI가 답변해드립니다.")
     
-    # 대화 초기화 버튼
-    if st.button("대화 초기화"):
-        st.session_state.messages = []
-        st.rerun()
-    
-    # 스크립트 로드
-    script = load_script()
-    
-    # 사이드바에 정보 표시
-    with st.sidebar:
-        st.header("AI 챗봇 정보")
-        st.info("이 AI 챗봇은 「터지는 릴스 강의」 내용을 기반으로 답변합니다.")
-        
-        # 참고 페이지 링크 추가
-        st.markdown("### 참고 자료")
-        st.markdown("[📚 「한신그룹 - 터지는 릴스 자료」\n바로가기](https://smart-jumper-b33.notion.site/185312cc7a5980aaa201f0303e1f7c10)")
-        
-        # 구분선 추가
-        st.divider()
-        
-        # 연락처 정보 추가
-        st.markdown("### 문의하기")
-        st.info("💡 문제가 발생하면 아래로 연락주세요\n\n📞 010-5752-2986")
-    
     # 이전 대화 내용 표시
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
     
-    # 사용자 입력
+    # 채팅 입력과 초기화 버튼을 위한 컬럼 생성
+    col1, col2 = st.columns([4, 1])  # 4:1 비율로 공간 분할
+    
+    # 초기화 버튼 (오른쪽 컬럼에 배치)
+    with col2:
+        if st.button("대화 초기화", use_container_width=True):
+            st.session_state.messages = []
+            st.rerun()
+    
+    # 사용자 입력 (왼쪽 컬럼에 배치)
     if prompt := st.chat_input("질문을 입력하세요"):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
