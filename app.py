@@ -23,6 +23,35 @@ def load_script():
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+def verify_response(script, question, answer):
+    try:
+        verification = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": """
+                당신은 엄격한 답변 검증 전문가입니다.
+                오직 주어진 스크립트 내용만을 기준으로 답변을 검증해주세요.
+                스크립트에 명시되지 않은 내용이 답변에 포함되어 있다면 이를 반드시 지적해주세요.
+                
+                다음 형식으로 답변해주세요:
+                - 정확도 점수: (0-100)
+                - 판단 근거: (스크립트의 어떤 부분을 참고했는지 구체적으로 명시)
+                - 스크립트를 벗어난 내용: (스크립트에 없는 내용이 답변에 포함된 경우 지적)
+                - 개선 제안: (필요한 경우)
+                """},
+                {"role": "user", "content": f"""
+                스크립트: {script}
+                질문: {question}
+                답변: {answer}
+                """}
+            ],
+            temperature=0,
+            max_tokens=500
+        )
+        return verification.choices[0].message.content
+    except Exception as e:
+        return f"검증 중 오류 발생: {str(e)}"
+
 # 메인 함수
 def main():
     st.title("💬 스크립트 Q&A 도우미")
@@ -58,9 +87,14 @@ def main():
                 try:
                     messages = [
                         {"role": "system", "content": f"""
-                        당신은 인스타그램 마케팅 전문가입니다. 
-                        주어진 스크립트 내용을 기반으로 질문에 답변해주세요.
-                        답변은 한국어로 해주시고, 가능한 스크립트의 내용을 인용하여 설명해주세요.
+                        당신은 주어진 스크립트 내용만을 기반으로 답변하는 Q&A 전문가입니다.
+                        
+                        중요한 규칙:
+                        1. 오직 제공된 스크립트에 있는 내용만 사용하여 답변하세요.
+                        2. 스크립트에 관련 내용이 없다면 "죄송하지만 주어진 스크립트에서 해당 질문에 대한 정보를 찾을 수 없습니다"라고 답변하세요.
+                        3. 스크립트의 내용을 벗어나는 일반적인 조언이나 추측은 하지 마세요.
+                        4. 답변할 때는 스크립트의 어떤 부분을 참고했는지 명시하면서 설명해주세요.
+                        
                         스크립트 내용: {script}
                         """}
                     ]
@@ -78,6 +112,12 @@ def main():
                     )
                     
                     assistant_response = response.choices[0].message.content
+                    
+                    # 답변 검증
+                    with st.expander("답변 검증 결과 보기"):
+                        verification_result = verify_response(script, prompt, assistant_response)
+                        st.markdown(verification_result)
+                    
                     st.markdown(assistant_response)
                     
                     # 어시스턴트 메시지 저장
