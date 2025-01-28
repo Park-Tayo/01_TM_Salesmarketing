@@ -29,7 +29,7 @@ st.set_page_config(page_title="릴스 강의 Q&A 챗봇", page_icon="🤖")
 # 스크립트 데이터 로드
 @st.cache_data
 def load_script():
-    df = pd.read_csv("릴스 강의_청크.csv", encoding='utf-8')
+    df = pd.read_csv("릴스 강의_정리.csv", encoding='utf-8')
     return " ".join(df.iloc[:, 0].dropna().astype(str))
 
 # 세션 상태 초기화
