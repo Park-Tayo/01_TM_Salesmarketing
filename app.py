@@ -43,10 +43,21 @@ def main():
     # 스크립트 로드
     script = load_script()
     
-    # 사이드바에 시스템 프롬프트 표시
+    # 사이드바에 정보 표시
     with st.sidebar:
         st.header("AI 챗봇 정보")
         st.info("이 AI 챗봇은 인스타그램 릴스 마케팅 강의 내용을 기반으로 답변합니다.")
+        
+        # 참고 페이지 링크 추가
+        st.markdown("### 참고 자료")
+        st.markdown("[📚 강의 노트 바로가기](https://smart-jumper-b33.notion.site/185312cc7a5980aaa201f0303e1f7c10)")
+        
+        # 구분선 추가
+        st.divider()
+        
+        # 연락처 정보 추가
+        st.markdown("### 문의하기")
+        st.info("💡 문제가 발생하면 아래로 연락해주세요:\n\n📞 010-5752-2986")
         
         if st.button("대화 초기화"):
             st.session_state.messages = []
