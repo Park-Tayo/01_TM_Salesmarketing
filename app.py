@@ -49,16 +49,7 @@ def main():
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
     
-    # 채팅 입력과 초기화 버튼을 위한 컬럼 생성
-    col1, col2 = st.columns([4, 1])  # 4:1 비율로 공간 분할
-    
-    # 초기화 버튼 (오른쪽 컬럼에 배치)
-    with col2:
-        if st.button("대화 초기화", use_container_width=True):
-            st.session_state.messages = []
-            st.rerun()
-    
-    # 사용자 입력 (왼쪽 컬럼에 배치)
+    # 사용자 입력
     if prompt := st.chat_input("질문을 입력하세요"):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
