@@ -36,35 +36,6 @@ def load_script():
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-def verify_response(script, question, answer):
-    try:
-        verification = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": """
-                당신은 엄격한 답변 검증 전문가입니다.
-                오직 주어진 릴스 강의 내용만을 기준으로 답변을 검증해주세요.
-                릴스 강의 내용에 명시되지 않은 내용이 답변에 포함되어 있다면 이를 반드시 지적해주세요.
-                
-                다음 형식으로 답변해주세요:
-                - 정확도 점수: (0-100)
-                - 판단 근거: (릴스 강의의 어떤 부분을 참고했는지 구체적으로 명시)
-                - 강의를 벗어난 내용: (릴스 강의에 없는 내용이 답변에 포함된 경우 지적)
-                - 개선 제안: (필요한 경우)
-                """},
-                {"role": "user", "content": f"""
-                스크립트: {script}
-                질문: {question}
-                답변: {answer}
-                """}
-            ],
-            temperature=0,
-            max_tokens=500
-        )
-        return verification.choices[0].message.content
-    except Exception as e:
-        return f"검증 중 오류 발생: {str(e)}"
-
 # 메인 함수
 def main():
     st.title("💬 릴스 강의 Q&A 챗봇")
@@ -72,12 +43,11 @@ def main():
     # 스크립트 로드
     script = load_script()
     
-    # 사이드바에 시스템 프롬프트 표시 (선택사항)
+    # 사이드바에 시스템 프롬프트 표시
     with st.sidebar:
         st.header("AI 챗봇 정보")
         st.info("이 AI 챗봇은 인스타그램 릴스 마케팅 강의 내용을 기반으로 답변합니다.")
         
-        # 대화 초기화 버튼
         if st.button("대화 초기화"):
             st.session_state.messages = []
             st.rerun()
@@ -89,7 +59,6 @@ def main():
     
     # 사용자 입력
     if prompt := st.chat_input("질문을 입력하세요"):
-        # 사용자 메시지 추가
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
@@ -107,33 +76,31 @@ def main():
                         2. 릴스 강의에 관련 내용이 없다면 "죄송하지만 주어진 강의 내용에서 해당 질문에 대한 정보를 찾을 수 없습니다"라고 답변하세요.
                         3. 릴스 강의의 내용을 벗어나는 일반적인 조언이나 추측은 하지 마세요.
                         4. 답변할 때는 릴스 강의의 어떤 부분을 참고했는지 명시하면서 설명해주세요.
+                        5. 답변 후에는 다음 형식으로 자체 검증 결과를 추가해주세요:
+                           
+                           [검증 결과]
+                           - 답변 정확도: (0-100%)
+                           - 참고한 강의 내용: (구체적인 부분 명시)
+                           - 강의 내용 범위 준수 여부: (예/아니오)
                         
                         스크립트 내용: {script}
                         """}
                     ]
-                    # 이전 대화 내용 포함
                     messages.extend([
                         {"role": m["role"], "content": m["content"]}
                         for m in st.session_state.messages
                     ])
                     
                     response = client.chat.completions.create(
-                        model="gpt-4o",
+                        model="gpt-4o",  # 모델명 수정
                         messages=messages,
-                        temperature=0.5,
+                        temperature=0,
                         max_tokens=1000
                     )
                     
                     assistant_response = response.choices[0].message.content
-                    
-                    # 답변 검증
-                    with st.expander("답변 검증 결과 보기"):
-                        verification_result = verify_response(script, prompt, assistant_response)
-                        st.markdown(verification_result)
-                    
                     st.markdown(assistant_response)
                     
-                    # 어시스턴트 메시지 저장
                     st.session_state.messages.append(
                         {"role": "assistant", "content": assistant_response}
                     )
