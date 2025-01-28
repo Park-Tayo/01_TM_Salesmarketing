@@ -40,15 +40,30 @@ if "messages" not in st.session_state:
 def main():
     st.title("💬 릴스 Q&A 챗봇")
     
-    # 사이드바 안내 메시지 추가
     st.info("ℹ️ 좌측의 메뉴(>)를 클릭하시면 참고 자료와 문의처를 확인하실 수 있습니다.\n\n"
             "ℹ️ 하단의 종이비행기 버튼을 클릭하시면 AI가 답변해드립니다.")
     
-    # 대화 초기화 버튼
-    if st.button("대화 초기화"):
-        st.session_state.messages = []
-        st.rerun()
+    # 이전 대화 내용 표시
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
     
+    # 입력창과 초기화 버튼을 위한 컨테이너
+    input_container = st.container()
+    
+    # 사용자 입력
+    with input_container:
+        # 두 개의 컬럼 생성
+        col1, col2 = st.columns([4, 1])  # 4:1 비율로 분할
+        
+        with col1:
+            prompt = st.chat_input("질문을 입력하세요")
+        with col2:
+            # 초기화 버튼을 우측 하단에 배치
+            if st.button("대화 초기화", key="reset_chat"):
+                st.session_state.messages = []
+                st.rerun()
+            
     # 스크립트 로드
     script = load_script()
     
@@ -68,18 +83,12 @@ def main():
         st.markdown("### 문의하기")
         st.info("💡 문제가 발생하면 아래로 연락주세요\n\n📞 010-5752-2986")
     
-    # 이전 대화 내용 표시
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-    
-    # 사용자 입력
-    if prompt := st.chat_input("질문을 입력하세요"):
+    # AI 응답 생성
+    if prompt:
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
             
-        # AI 응답 생성
         with st.chat_message("assistant"):
             with st.spinner('답변을 생성하고 있습니다...'):
                 try:
