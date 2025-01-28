@@ -24,7 +24,25 @@ except Exception as e:
     st.stop()
 
 # 페이지 설정
-st.set_page_config(page_title="릴스 Q&A 챗봇", page_icon="🤖")
+st.set_page_config(
+    page_title="릴스 Q&A 챗봇", 
+    page_icon="🤖",
+    initial_sidebar_state="collapsed",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': None
+    }
+)
+
+# GitHub 버튼 등 기본 메뉴 숨기기
+hide_menu_style = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        </style>
+        """
+st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 # 스크립트 데이터 로드
 @st.cache_data
